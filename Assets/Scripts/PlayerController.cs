@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
     public float speed = 0.0f;
     public float jumpHeight = 200.0f;
     public int curJumps = 1;
-
+    public GameObject LoseTextObj;
+    public GameObject WinTextObj;
     private bool started = false;
     private bool ducking = false;
     private int defJumps;
@@ -16,6 +17,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        WinTextObj.SetActive(false);
+        LoseTextObj.SetActive(false);
         // Store ammount of jumps
         defJumps = curJumps;
 
@@ -78,6 +81,15 @@ public class PlayerController : MonoBehaviour
         {
             // Reset number of jumps when colliding the ground
             curJumps = defJumps;
+        }
+        if (other.gameObject.CompareTag("Goal"))
+        {
+            WinTextObj.SetActive(true);
+        }
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("Collision");
+            LoseTextObj.SetActive(true);
         }
     }
 }

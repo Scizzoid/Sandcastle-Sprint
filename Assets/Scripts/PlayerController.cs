@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private bool started = false;
     private bool finished = false;
     private bool ducking = false;
+    private bool grounded = false;
     private float fallTimer = 0.0f;
     private float finishedTimer;
     private float loseRotation = -25.0f;
@@ -67,19 +68,40 @@ public class PlayerController : MonoBehaviour
             // Toggle Ducking when duck button is pressed or released
             ducking = !ducking;
 
-            if (ducking && transform.localScale.y > 0.2f)
+            if (ducking && !finished)
             {
-                transform.localScale += new Vector3(0.0f, -0.2f, 0.0f);
-
                 // Lower jump height so player must un-duck to jump over obstacles
                 jumpHeight = 100.0f;
+                StartCoroutine(duckCoroutine());
             }
 
-            else if (!ducking && transform.localScale.y < 0.4f)
+            else if (!ducking && !finished)
             {
-                transform.localScale += new Vector3(0.0f, 0.2f, 0.0f);
                 jumpHeight = 200.0f;
+                StartCoroutine(unduckCoroutine());
             }
+        }
+    }
+
+    private IEnumerator duckCoroutine()
+    {
+        while (true && transform.localScale.y > 0.2f)
+        {
+            transform.localScale += new Vector3(0.0f, -0.05f, 0.0f);
+            if (grounded)
+            {
+                transform.Translate(Vector3.up * -0.05f);
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator unduckCoroutine()
+    {
+        while (true && transform.localScale.y < 0.4f)
+        {
+            transform.localScale += new Vector3(0.0f, 0.05f, 0.0f);
+            yield return null;
         }
     }
 
@@ -91,6 +113,8 @@ public class PlayerController : MonoBehaviour
         if (finished)
         {
             restartTextObj.SetActive(true);
+            StartCoroutine(unduckCoroutine());
+
             finishedTimer -= Time.deltaTime;
             restartText.text = "Restart in " + Mathf.Round(finishedTimer).ToString();
             if (finishedTimer <= 0.0f)
@@ -109,7 +133,6 @@ public class PlayerController : MonoBehaviour
             // Stop player
             speed = 0.0f;
             jumpHeight = 0.0f;
-
             finishedTimer = 5.0f;
             finished = true;
         }
@@ -117,13 +140,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.name == "Runway")
+        if (other.gameObject.CompareTag("Ground") && !finished)
         {
             // Reset number of jumps when colliding the ground
             curJumps = defJumps;
-        }  
+            grounded = true;
+        }
 
-        if (other.gameObject.CompareTag("Obstacle"))
+        if (other.gameObject.CompareTag("Obstacle") && !finished)
         {
             Debug.Log("Collision");
             LoseTextObj.SetActive(true);
@@ -135,13 +159,13 @@ public class PlayerController : MonoBehaviour
             {
                 // Player will rotate backwards and fall over
                 Quaternion target = Quaternion.Euler(0.0f, 0.0f, loseRotation);
-                
-                while(fallTimer < 5.0f)
+
+                while (fallTimer < 5.0f)
                 {
                     transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 0.04f);
                     fallTimer += Time.deltaTime;
                 }
-                    
+
             }
 
             else
@@ -151,6 +175,14 @@ public class PlayerController : MonoBehaviour
             }
             finishedTimer = 3.0f;
             finished = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            grounded = false;
         }
     }
 }

@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float speed = 0.0f;
     public float jumpHeight = 200.0f;
     public int curJumps = 1;
+    public GameObject playerModel;
     public GameObject startTextObj;
     public GameObject restartTextObj;
     public GameObject LoseTextObj;
@@ -19,12 +20,15 @@ public class PlayerController : MonoBehaviour
     private bool finished = false;
     private bool ducking = false;
     private bool grounded = false;
+    private bool CRRunning = false;
     private float fallTimer = 0.0f;
-    private float finishedTimer;
+    private float restartTimer;
     private float loseRotation = -25.0f;
     private int defJumps;
     private Rigidbody rb;
     private TextMeshProUGUI restartText;
+
+    Animator playerAnimator;
 
     void Start()
     {
@@ -37,7 +41,9 @@ public class PlayerController : MonoBehaviour
         defJumps = curJumps;
 
         rb = GetComponent<Rigidbody>();
+        playerAnimator = playerModel.GetComponent<Animator>();
         restartText = restartTextObj.GetComponent<TMPro.TextMeshProUGUI>();
+
     }
 
     void OnJump()
@@ -46,6 +52,7 @@ public class PlayerController : MonoBehaviour
         if (!started)
         {
             started = true;
+            playerAnimator.SetBool("GameStarted", started);
             startTextObj.SetActive(false);
             speed = 3.6f;
         }
@@ -54,8 +61,10 @@ public class PlayerController : MonoBehaviour
         {
             if (curJumps > 0)
             {
+                playerAnimator.SetBool("Jumped", true);
                 Vector3 jump = new Vector3(0.0f, jumpHeight, 0.0f);
                 rb.AddForce(jump);
+                
                 curJumps--;
             }
         }
@@ -68,14 +77,14 @@ public class PlayerController : MonoBehaviour
             // Toggle Ducking when duck button is pressed or released
             ducking = !ducking;
 
-            if (ducking && !finished)
+            if (ducking && !finished && !CRRunning)
             {
                 // Lower jump height so player must un-duck to jump over obstacles
                 jumpHeight = 100.0f;
                 StartCoroutine(duckCoroutine());
             }
 
-            else if (!ducking && !finished)
+            else if (!ducking && !finished && !CRRunning)
             {
                 jumpHeight = 200.0f;
                 StartCoroutine(unduckCoroutine());
@@ -87,12 +96,18 @@ public class PlayerController : MonoBehaviour
     {
         while (true && transform.localScale.y > 0.2f)
         {
-            transform.localScale += new Vector3(0.0f, -0.05f, 0.0f);
+            CRRunning = true;
+
+            // Shrink the player
+            transform.localScale += new Vector3(-0.01f, -0.02f, -0.01f);
             if (grounded)
             {
-                transform.Translate(Vector3.up * -0.05f);
+                // Move player down to stay on ground
+                transform.Translate(Vector3.up * -0.02f);
             }
+
             yield return null;
+            CRRunning = false;
         }
     }
 
@@ -100,8 +115,13 @@ public class PlayerController : MonoBehaviour
     {
         while (true && transform.localScale.y < 0.4f)
         {
-            transform.localScale += new Vector3(0.0f, 0.05f, 0.0f);
+            CRRunning = true;
+
+            // Grow the player
+            transform.localScale += new Vector3(0.01f, 0.02f, 0.01f);
+
             yield return null;
+            CRRunning = false;
         }
     }
 
@@ -115,9 +135,9 @@ public class PlayerController : MonoBehaviour
             restartTextObj.SetActive(true);
             StartCoroutine(unduckCoroutine());
 
-            finishedTimer -= Time.deltaTime;
-            restartText.text = "Restart in " + Mathf.Round(finishedTimer).ToString();
-            if (finishedTimer <= 0.0f)
+            restartTimer -= Time.deltaTime;
+            restartText.text = "Restart in " + Mathf.Round(restartTimer).ToString();
+            if (restartTimer <= 0.0f)
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
@@ -133,8 +153,9 @@ public class PlayerController : MonoBehaviour
             // Stop player
             speed = 0.0f;
             jumpHeight = 0.0f;
-            finishedTimer = 5.0f;
+            restartTimer = 5.0f;
             finished = true;
+            playerAnimator.SetBool("GameWon", finished);
         }
     }
 
@@ -145,11 +166,13 @@ public class PlayerController : MonoBehaviour
             // Reset number of jumps when colliding the ground
             curJumps = defJumps;
             grounded = true;
+            playerAnimator.SetBool("Jumped", false);
         }
 
         if (other.gameObject.CompareTag("Obstacle") && !finished)
         {
             Debug.Log("Collision");
+            playerAnimator.SetBool("GameLost", true);
             LoseTextObj.SetActive(true);
             speed = 0.0f;
             jumpHeight = 0.0f;
@@ -173,7 +196,7 @@ public class PlayerController : MonoBehaviour
                 // Player will be pushed forward and fall over
                 rb.velocity = new Vector3(-2, 0, 0);
             }
-            finishedTimer = 3.0f;
+            restartTimer = 3.0f;
             finished = true;
         }
     }

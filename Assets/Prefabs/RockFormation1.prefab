@@ -23,7 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5832620826041375955}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.9458303, y: -1.0630608, z: -2.3945084}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -44,7 +44,7 @@ PrefabInstance:
     - target: {fileID: 2697100050261881357, guid: 781f20c0c7745a44682df33ace75d510,
         type: 3}
       propertyPath: m_Name
-      value: LostCove_Floating_Isle_02 (2)
+      value: FloatingIsle2 (2)
       objectReference: {fileID: 0}
     - target: {fileID: 3325299848898177207, guid: 781f20c0c7745a44682df33ace75d510,
         type: 3}
@@ -134,7 +134,7 @@ PrefabInstance:
     - target: {fileID: 2697100050261881357, guid: 781f20c0c7745a44682df33ace75d510,
         type: 3}
       propertyPath: m_Name
-      value: LostCove_Floating_Isle_02 (1)
+      value: FloatingIsle2 (1)
       objectReference: {fileID: 0}
     - target: {fileID: 3325299848898177207, guid: 781f20c0c7745a44682df33ace75d510,
         type: 3}
@@ -224,7 +224,7 @@ PrefabInstance:
     - target: {fileID: 2697100050261881357, guid: 781f20c0c7745a44682df33ace75d510,
         type: 3}
       propertyPath: m_Name
-      value: LostCove_Floating_Isle_02
+      value: FloatingIsle2
       objectReference: {fileID: 0}
     - target: {fileID: 3325299848898177207, guid: 781f20c0c7745a44682df33ace75d510,
         type: 3}

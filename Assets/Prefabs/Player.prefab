@@ -162,6 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  duckSpeed: 0.005
   jumpHeight: 200
   curJumps: 1
   playerModel: {fileID: 5009770447790806776}

@@ -7,29 +7,32 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    public bool attackUnlocked = false;
     public float speed = 0.0f;
-    public float duckSpeed = 0.005f;
-    public float jumpHeight = 200.0f;
+    public float duckSpeed = 0.03f;
+    public float jumpHeight = 4.0f;
     public int curJumps = 1;
     public GameObject playerModel;
     public GameObject startTextObj;
     public GameObject directionsTextObj;
-    public GameObject restartTextObj;
+    public GameObject FinishedTextObj;
     public GameObject LoseTextObj;
     public GameObject WinTextObj;
 
     private bool started = false;
     private bool finished = false;
+    private bool won = false;
     private bool attacking = false;
     private bool ducking = false;
     private bool grounded = false;
     private bool CRRunning = false;
     private float fallTimer = 0.0f;
-    private float restartTimer;
+    private float finishedTimer;
     private float loseRotation = -25.0f;
+    private float defJumpHeight;
     private int defJumps;
     private Rigidbody rb;
-    private TextMeshProUGUI restartText;
+    private TextMeshProUGUI FinishedText;
     private Animator playerAnimator;
 
     void Start()
@@ -37,17 +40,18 @@ public class PlayerController : MonoBehaviour
         // Set UI object states
         WinTextObj.SetActive(false);
         LoseTextObj.SetActive(false);
-        restartTextObj.SetActive(false);
+        FinishedTextObj.SetActive(false);
         directionsTextObj.SetActive(true);
         startTextObj.SetActive(true);
 
-        // Store ammount of jumps
+        // Store ammount of jumps and jumpHeight
         defJumps = curJumps;
+        defJumpHeight = jumpHeight;
 
         // Accessed components
         rb = GetComponent<Rigidbody>();
         playerAnimator = playerModel.GetComponent<Animator>();
-        restartText = restartTextObj.GetComponent<TMPro.TextMeshProUGUI>();
+        FinishedText = FinishedTextObj.GetComponent<TMPro.TextMeshProUGUI>();
 
     }
 
@@ -73,14 +77,14 @@ public class PlayerController : MonoBehaviour
                 {
                     playerAnimator.SetBool("Jumped", true);
                     Vector3 jump = new Vector3(0.0f, jumpHeight, 0.0f);
-                    rb.AddForce(jump);
+                    rb.velocity = jump;
                 }
 
                 else // All Jumps after
                 {
                     playerAnimator.SetBool("MultiJump", true);
-                    Vector3 jump = new Vector3(0.0f, jumpHeight * 0.5f, 0.0f);
-                    rb.AddForce(jump);
+                    Vector3 jump = new Vector3(0.0f, jumpHeight * 0.75f, 0.0f);
+                    rb.velocity = jump;
                 }
                 curJumps--;
             }
@@ -93,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
     void OnAttack()
     {
-        if (curJumps >= defJumps-1 && !finished) // No Attacking on double jump or when finished
+        if (attackUnlocked && curJumps >= defJumps-1 && !finished) // No Attacking on double jump or when finished
         {
             playerAnimator.SetBool("Attacking", true);
             attacking = true;
@@ -107,6 +111,17 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.6f);
         playerAnimator.SetBool("Attacking", false);
         attacking = false;
+    }
+
+    private IEnumerator rotateCoroutine(Collision other, Vector3 rotateoffset)
+    {
+        while (true && other.gameObject.transform.eulerAngles.z > 175.0f)
+        {
+            other.gameObject.transform.RotateAround(rotateoffset, Vector3.forward, 250.0f * Time.deltaTime);
+
+            yield return new WaitForFixedUpdate();
+        }
+        other.gameObject.SetActive(false);
     }
 
 //------------------------------------------------------------------------
@@ -123,13 +138,13 @@ public class PlayerController : MonoBehaviour
             if (ducking && !finished && !CRRunning)
             {
                 // Lower jump height so player must un-duck to jump over obstacles
-                jumpHeight = 150.0f;
+                jumpHeight = defJumpHeight * 0.5f;
                 StartCoroutine(duckCoroutine());
             }
 
             else if (!ducking && !finished && !CRRunning)
             {
-                jumpHeight = 200.0f;
+                jumpHeight = defJumpHeight;
                 StartCoroutine(unduckCoroutine());
             }
         }
@@ -149,9 +164,9 @@ public class PlayerController : MonoBehaviour
                 transform.Translate(Vector3.up * -1.0f * duckSpeed);
             }
 
-            yield return null;
-            CRRunning = false;
+            yield return new WaitForFixedUpdate();
         }
+        CRRunning = false;
     }
 
     private IEnumerator unduckCoroutine()
@@ -163,9 +178,9 @@ public class PlayerController : MonoBehaviour
             // Grow the player
             transform.localScale += new Vector3(0.5f * duckSpeed, duckSpeed, 0.5f * duckSpeed);
 
-            yield return null;
-            CRRunning = false;
+            yield return new WaitForFixedUpdate();
         }
+        CRRunning = false;
     }
 
 //------------------------------------------------------------------------
@@ -177,18 +192,59 @@ public class PlayerController : MonoBehaviour
 
         if (finished)
         {
-            restartTextObj.SetActive(true);
-            StartCoroutine(unduckCoroutine());
+            FinishedTextObj.SetActive(true);
+            finishedTimer -= Time.deltaTime;
 
-            restartTimer -= Time.deltaTime;
-            restartText.text = "Restarting in " + Mathf.Round(restartTimer).ToString();
-            if (restartTimer <= 0.0f)
+            if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
             {
-                // Restart current scene
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                FinishedText.text = "Next Level in " + Mathf.Round(finishedTimer).ToString();
+            }
+
+            else
+            {
+                FinishedText.text = "Restarting in " + Mathf.Round(finishedTimer).ToString();
+            }
+            
+            if (finishedTimer <= 0.0f)
+            {
+                // Next level
+                if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                }
+
+                // Restart game
+                else if (won && SceneManager.GetActiveScene().name == "Beta Level 3")
+                {
+                    SceneManager.LoadScene(0);
+                }
+                // Restart scene
+                else
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                }
             }
         }
     }
+
+//----------------------------LEVEL SHORTCUTS-----------------------------
+
+    void OnLevel1()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    void OnLevel2()
+    {
+        SceneManager.LoadScene(1);
+    }
+
+    void OnLevel3()
+    {
+        SceneManager.LoadScene(2);
+    }
+
+//------------------------------------------------------------------------
 
 //------------------------COLLISIONS & TRIGGERS---------------------------
 
@@ -201,8 +257,8 @@ public class PlayerController : MonoBehaviour
             // Stop player
             speed = 0.0f;
             jumpHeight = 0.0f;
-            restartTimer = 5.0f;
-            finished = true;
+            finishedTimer = 5.0f;
+            finished = won = true;
             playerAnimator.SetBool("GameWon", finished);
         }
     }
@@ -222,7 +278,10 @@ public class PlayerController : MonoBehaviour
         {
             if (other.gameObject.name.Contains("Breakable") && attacking)
             {
-                other.gameObject.SetActive(false); //Sucessfully destroyed obstacle
+                Vector3 rotateoffset = new Vector3(other.gameObject.transform.position.x + 0.25f, other.gameObject.transform.position.y - 0.75f, other.gameObject.transform.position.z);
+                
+                StartCoroutine(rotateCoroutine(other, rotateoffset));
+
             }
 
             else
@@ -251,7 +310,7 @@ public class PlayerController : MonoBehaviour
                     // Player will be pushed forward and fall over
                     rb.velocity = new Vector3(-2, 0, 0);
                 }
-                restartTimer = 4.0f;
+                finishedTimer = 3.0f;
                 finished = true;
             }
         }

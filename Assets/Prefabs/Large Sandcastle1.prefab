@@ -30,7 +30,7 @@ PrefabInstance:
     - target: {fileID: 4637004084339167021, guid: 1f7d6fcadc510fa498f3397f26f7da37,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 26.83
+      value: -35.7
       objectReference: {fileID: 0}
     - target: {fileID: 4637004084339167021, guid: 1f7d6fcadc510fa498f3397f26f7da37,
         type: 3}
@@ -80,7 +80,7 @@ PrefabInstance:
     - target: {fileID: 7273942423040521567, guid: 1f7d6fcadc510fa498f3397f26f7da37,
         type: 3}
       propertyPath: m_Name
-      value: Large Sandcastle1
+      value: Large Sandcastle1 (2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f7d6fcadc510fa498f3397f26f7da37, type: 3}

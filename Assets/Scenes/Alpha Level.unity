@@ -4518,6 +4518,11 @@ PrefabInstance:
       objectReference: {fileID: 1746990200}
     - target: {fileID: 155730525338589698, guid: 0294f36de6776a34bbc1879bcd5206c4,
         type: 3}
+      propertyPath: FinishedTextObj
+      value: 
+      objectReference: {fileID: 1746990200}
+    - target: {fileID: 155730525338589698, guid: 0294f36de6776a34bbc1879bcd5206c4,
+        type: 3}
       propertyPath: directionTextObj
       value: 
       objectReference: {fileID: 1712853349}

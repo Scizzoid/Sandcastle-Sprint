@@ -9,12 +9,13 @@ public class PlayerController : MonoBehaviour
 {
     public bool attackUnlocked = false;
     public float speed = 0.0f;
-    public float duckSpeed = 0.03f;
+    public float scaleSpeed = 0.03f;
     public float jumpHeight = 4.0f;
     public int curJumps = 1;
     public GameObject playerModel;
     public GameObject startTextObj;
     public GameObject directionsTextObj;
+    public GameObject unlockedTextObj;
     public GameObject FinishedTextObj;
     public GameObject LoseTextObj;
     public GameObject WinTextObj;
@@ -23,9 +24,10 @@ public class PlayerController : MonoBehaviour
     private bool finished = false;
     private bool won = false;
     private bool attacking = false;
-    private bool ducking = false;
+    private bool shrinking = false;
     private bool grounded = false;
-    private bool CRRunning = false;
+    private bool shrinkCR = false;
+    private bool growCR = false;
     private float fallTimer = 0.0f;
     private float finishedTimer;
     private float loseRotation = -25.0f;
@@ -34,6 +36,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private TextMeshProUGUI FinishedText;
     private Animator playerAnimator;
+    private Coroutine shrink;
+    private Coroutine grow;
 
     void Start()
     {
@@ -43,6 +47,10 @@ public class PlayerController : MonoBehaviour
         FinishedTextObj.SetActive(false);
         directionsTextObj.SetActive(true);
         startTextObj.SetActive(true);
+        if (!(SceneManager.GetActiveScene().name == "Beta Level 1"))
+        {
+            unlockedTextObj.SetActive(true);
+        }
 
         // Store ammount of jumps and jumpHeight
         defJumps = curJumps;
@@ -66,6 +74,10 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool("GameStarted", started);
             startTextObj.SetActive(false);
             directionsTextObj.SetActive(false);
+            if (!(SceneManager.GetActiveScene().name == "Beta Level 1"))
+            {
+                unlockedTextObj.SetActive(false);
+            }
             speed = 3.6f;
         }
 
@@ -73,14 +85,16 @@ public class PlayerController : MonoBehaviour
         {
             if (curJumps > 0)
             {
-                if (curJumps == defJumps) // First Jump
+                // First Jump
+                if (curJumps == defJumps) 
                 {
                     playerAnimator.SetBool("Jumped", true);
                     Vector3 jump = new Vector3(0.0f, jumpHeight, 0.0f);
                     rb.velocity = jump;
                 }
 
-                else // All Jumps after
+                // All Jumps after
+                else
                 {
                     playerAnimator.SetBool("MultiJump", true);
                     Vector3 jump = new Vector3(0.0f, jumpHeight * 0.75f, 0.0f);
@@ -97,7 +111,8 @@ public class PlayerController : MonoBehaviour
 
     void OnAttack()
     {
-        if (attackUnlocked && curJumps >= defJumps-1 && !finished) // No Attacking on double jump or when finished
+        // No Attacking on double jump or when finished
+        if (attackUnlocked && curJumps >= defJumps-1 && !finished)
         {
             playerAnimator.SetBool("Attacking", true);
             attacking = true;
@@ -113,6 +128,7 @@ public class PlayerController : MonoBehaviour
         attacking = false;
     }
 
+    // For rotating surfboards when attacked
     private IEnumerator rotateCoroutine(Collision other, Vector3 rotateoffset)
     {
         while (true && other.gameObject.transform.eulerAngles.z > 175.0f)
@@ -126,61 +142,63 @@ public class PlayerController : MonoBehaviour
 
 //------------------------------------------------------------------------
 
-//----------------------------------DUCK----------------------------------
+//---------------------------------SHRINK---------------------------------
 
-    public void OnDuck()
+    public void OnShrink()
     {
         if (started)
         {
-            // Toggle Ducking when duck button is pressed or released
-            ducking = !ducking;
+            // Toggle shrinking when shrink button is pressed or released
+            shrinking = !shrinking;
 
-            if (ducking && !finished && !CRRunning)
+            if (shrinking && !finished)
             {
-                // Lower jump height so player must un-duck to jump over obstacles
+                // Lower jump height so player must grow to jump over obstacles
                 jumpHeight = defJumpHeight * 0.5f;
-                StartCoroutine(duckCoroutine());
+                // If growing, stop growing
+                if (growCR) { StopCoroutine(grow); }
+                shrink = StartCoroutine(shrinkCoroutine());
             }
 
-            else if (!ducking && !finished && !CRRunning)
+            else if (!shrinking && !finished)
             {
+                // Reset jump height
                 jumpHeight = defJumpHeight;
-                StartCoroutine(unduckCoroutine());
+                // If shrinking, stop shrinking
+                if (shrinkCR) { StopCoroutine(shrink); }
+                grow = StartCoroutine(growCoroutine());
             }
         }
     }
 
-    private IEnumerator duckCoroutine()
+    private IEnumerator shrinkCoroutine()
     {
-        while (true && transform.localScale.y > 0.2f)
+        while (transform.localScale.y > 0.2f)
         {
-            CRRunning = true;
-
+            shrinkCR = true;
             // Shrink the player
-            transform.localScale += new Vector3(-0.5f * duckSpeed, -1.0f * duckSpeed, -0.5f * duckSpeed);
-            if (grounded)
-            {
-                // Move player down to stay on ground
-                transform.Translate(Vector3.up * -1.0f * duckSpeed);
-            }
-
+            transform.localScale += new Vector3(-0.5f * scaleSpeed,
+                                                -1.0f * scaleSpeed,
+                                                -0.5f * scaleSpeed);
+            // If touching ground, move player down to stay on ground
+            if (grounded) { transform.Translate(Vector3.up * -1.0f * scaleSpeed); }
             yield return new WaitForFixedUpdate();
         }
-        CRRunning = false;
+        shrinkCR = false;
     }
 
-    private IEnumerator unduckCoroutine()
+    private IEnumerator growCoroutine()
     {
-        while (true && transform.localScale.y < 0.4f)
+        while (transform.localScale.y < 0.4f)
         {
-            CRRunning = true;
-
+            growCR = true;
             // Grow the player
-            transform.localScale += new Vector3(0.5f * duckSpeed, duckSpeed, 0.5f * duckSpeed);
-
+            transform.localScale += new Vector3(0.5f * scaleSpeed,
+                                                       scaleSpeed,
+                                                0.5f * scaleSpeed);
             yield return new WaitForFixedUpdate();
         }
-        CRRunning = false;
+        growCR = false;
     }
 
 //------------------------------------------------------------------------
@@ -278,7 +296,9 @@ public class PlayerController : MonoBehaviour
         {
             if (other.gameObject.name.Contains("Breakable") && attacking)
             {
-                Vector3 rotateoffset = new Vector3(other.gameObject.transform.position.x + 0.25f, other.gameObject.transform.position.y - 0.75f, other.gameObject.transform.position.z);
+                Vector3 rotateoffset = new Vector3(other.gameObject.transform.position.x + 0.25f,
+                                                   other.gameObject.transform.position.y - 0.75f,
+                                                   other.gameObject.transform.position.z);
                 
                 StartCoroutine(rotateCoroutine(other, rotateoffset));
 

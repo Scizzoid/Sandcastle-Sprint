@@ -1062,11 +1062,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41646da8f1feedd42a4ccd73309100ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackUnlocked: 0
   speed: 0
+  scaleSpeed: 0.03
   jumpHeight: 200
   curJumps: 1
+  playerModel: {fileID: 0}
   startTextObj: {fileID: 2038569021}
-  restartTextObj: {fileID: 1746990200}
+  directionsTextObj: {fileID: 0}
+  unlockedTextObj: {fileID: 0}
+  FinishedTextObj: {fileID: 0}
   LoseTextObj: {fileID: 553108844}
   WinTextObj: {fileID: 1846660118}
 --- !u!114 &1138028647
@@ -1159,7 +1164,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4b1d90197abf85c43b520c9a7153627c, type: 2}
+  - {fileID: 2100000, guid: b8d1285cff1130e4ba9494831b22d388, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1332,7 +1337,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7e40da90c0f0fcd41b3ae8e73f487f9a, type: 2}
+  - {fileID: 2100000, guid: c90b0ecf6f183d649824fac839cd4770, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1700,7 +1705,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6109a7df1ba623340a89d01343d5513e, type: 2}
+  - {fileID: 2100000, guid: b8d1285cff1130e4ba9494831b22d388, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

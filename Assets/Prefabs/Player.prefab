@@ -116,7 +116,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &155730525338589699
 MonoBehaviour:
@@ -161,13 +161,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41646da8f1feedd42a4ccd73309100ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackUnlocked: 0
   speed: 0
-  duckSpeed: 0.005
-  jumpHeight: 200
+  scaleSpeed: 0.03
+  jumpHeight: 4.25
   curJumps: 1
   playerModel: {fileID: 5009770447790806776}
   startTextObj: {fileID: 0}
-  restartTextObj: {fileID: 0}
+  directionsTextObj: {fileID: 0}
+  unlockedTextObj: {fileID: 0}
+  FinishedTextObj: {fileID: 0}
   LoseTextObj: {fileID: 0}
   WinTextObj: {fileID: 0}
 --- !u!1001 &2522850883814157028

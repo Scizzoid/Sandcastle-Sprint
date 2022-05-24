@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Duck",
+                    "name": "Shrink",
                     "type": "Button",
                     "id": "23d50f58-be3d-453d-b440-176c5a8b54b0",
                     "expectedControlType": "Button",
@@ -273,7 +273,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Duck",
+                    "action": "Shrink",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -284,7 +284,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Duck",
+                    "action": "Shrink",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

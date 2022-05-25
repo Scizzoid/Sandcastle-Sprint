@@ -19,15 +19,18 @@ public class PlayerController : MonoBehaviour
     public GameObject FinishedTextObj;
     public GameObject LoseTextObj;
     public GameObject WinTextObj;
+    public AudioSource footsteps;
+    public AudioSource kick;
 
     private bool started = false;
     private bool finished = false;
     private bool won = false;
     private bool attacking = false;
     private bool shrinking = false;
-    private bool grounded = false;
+    private bool grounded = true;
     private bool shrinkCR = false;
     private bool growCR = false;
+    private bool footstepsPlaying = false;
     private float fallTimer = 0.0f;
     private float finishedTimer;
     private float loseRotation = -25.0f;
@@ -61,6 +64,63 @@ public class PlayerController : MonoBehaviour
         playerAnimator = playerModel.GetComponent<Animator>();
         FinishedText = FinishedTextObj.GetComponent<TMPro.TextMeshProUGUI>();
 
+    }
+
+    void FixedUpdate()
+    {
+        // Left is technically forward on the track
+        transform.Translate(Vector3.left * Time.deltaTime * speed);
+
+        // Play footstep SFX
+        if (grounded && !finished && started && footstepsPlaying == false)
+        {
+            footsteps.Play();
+            footstepsPlaying = true;
+        }
+
+        // Stop footstep SFX
+        else if (!grounded || finished)
+        {
+            footsteps.Stop();
+            footstepsPlaying = false;
+        }
+
+        // Display finish text
+        if (finished)
+        {
+            FinishedTextObj.SetActive(true);
+            finishedTimer -= Time.deltaTime;
+
+            if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
+            {
+                FinishedText.text = "Next Level in " + Mathf.Round(finishedTimer).ToString();
+            }
+
+            else
+            {
+                FinishedText.text = "Restarting in " + Mathf.Round(finishedTimer).ToString();
+            }
+
+            if (finishedTimer <= 0.0f)
+            {
+                // Next level
+                if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                }
+
+                // Restart game
+                else if (won && SceneManager.GetActiveScene().name == "Beta Level 3")
+                {
+                    SceneManager.LoadScene(0);
+                }
+                // Restart scene
+                else
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                }
+            }
+        }
     }
 
 //----------------------------------JUMP----------------------------------
@@ -182,6 +242,7 @@ public class PlayerController : MonoBehaviour
                                                 -0.5f * scaleSpeed);
             // If touching ground, move player down to stay on ground
             if (grounded) { transform.Translate(Vector3.up * -1.0f * scaleSpeed); }
+            footsteps.volume += -3.0f * scaleSpeed;
             yield return new WaitForFixedUpdate();
         }
         shrinkCR = false;
@@ -196,54 +257,13 @@ public class PlayerController : MonoBehaviour
             transform.localScale += new Vector3(0.5f * scaleSpeed,
                                                        scaleSpeed,
                                                 0.5f * scaleSpeed);
+            footsteps.volume += 3.0f * scaleSpeed;
             yield return new WaitForFixedUpdate();
         }
         growCR = false;
     }
 
 //------------------------------------------------------------------------
-
-    void FixedUpdate()
-    {
-        // Left is technically forward on the track
-        transform.Translate(Vector3.left * Time.deltaTime * speed);
-
-        if (finished)
-        {
-            FinishedTextObj.SetActive(true);
-            finishedTimer -= Time.deltaTime;
-
-            if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
-            {
-                FinishedText.text = "Next Level in " + Mathf.Round(finishedTimer).ToString();
-            }
-
-            else
-            {
-                FinishedText.text = "Restarting in " + Mathf.Round(finishedTimer).ToString();
-            }
-            
-            if (finishedTimer <= 0.0f)
-            {
-                // Next level
-                if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
-                {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-                }
-
-                // Restart game
-                else if (won && SceneManager.GetActiveScene().name == "Beta Level 3")
-                {
-                    SceneManager.LoadScene(0);
-                }
-                // Restart scene
-                else
-                {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                }
-            }
-        }
-    }
 
 //----------------------------LEVEL SHORTCUTS-----------------------------
 
@@ -301,6 +321,7 @@ public class PlayerController : MonoBehaviour
                                                    other.gameObject.transform.position.z);
                 
                 StartCoroutine(rotateCoroutine(other, rotateoffset));
+                kick.Play();
 
             }
 

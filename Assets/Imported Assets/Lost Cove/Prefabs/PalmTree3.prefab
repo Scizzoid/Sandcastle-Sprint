@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 575990783177699087}
   - component: {fileID: 3481721240974762154}
   - component: {fileID: 1708403903167157344}
-  - component: {fileID: 6798433324886174212}
   m_Layer: 0
   m_Name: PalmTree3
   m_TagString: Untagged
@@ -84,17 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6798433324886174212
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 915783493873890741}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7210563249916045440, guid: ebff3b074b79e5144a0972ff4dba81c0, type: 3}

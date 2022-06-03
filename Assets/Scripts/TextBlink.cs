@@ -17,9 +17,9 @@ public class TextBlink : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Text.color = new Color(Mathf.PingPong(blinkSpeed * Time.time, 0.5f),
-                               Mathf.PingPong(blinkSpeed * Time.time, 0.5f),
-                               Mathf.PingPong(blinkSpeed * Time.time, 0.5f),
+        Text.color = new Color(Mathf.PingPong(blinkSpeed * Time.time, 1.0f),
+                               Mathf.PingPong(blinkSpeed * Time.time, 1.0f),
+                               Mathf.PingPong(blinkSpeed * Time.time, 1.0f),
                                1);
     }
 }

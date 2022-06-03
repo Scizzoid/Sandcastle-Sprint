@@ -9,9 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1025597268104668895}
-  - component: {fileID: 1025597268104668894}
-  - component: {fileID: 1025597268104668893}
-  - component: {fileID: 1025597268104668892}
   m_Layer: 0
   m_Name: Goal Zone
   m_TagString: Ground
@@ -41,70 +38,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1025597268104668894
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1025597268104668891}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &1025597268104668893
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1025597268104668891}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 6109a7df1ba623340a89d01343d5513e, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1025597268104668892
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1025597268104668891}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1025597269770918197
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,7 +170,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7902449068094019824, guid: 76d62d313f864bc4a8138c40e4dd5018, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 76d62d313f864bc4a8138c40e4dd5018, type: 3}
 --- !u!4 &8610493456128666275 stripped
 Transform:
@@ -332,7 +266,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1267592784633841683, guid: 33ae25f40b90de24290c77f4b6c7e2ef, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 33ae25f40b90de24290c77f4b6c7e2ef, type: 3}
 --- !u!4 &976328273701951838 stripped
 Transform:
@@ -427,7 +362,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3915688929809206228, guid: 350df6b4b03a667428dd0b7da245ed3e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 350df6b4b03a667428dd0b7da245ed3e, type: 3}
 --- !u!4 &1238669028761484466 stripped
 Transform:
@@ -522,7 +458,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6346681145975928568, guid: 5ec79d91047e5354385932be62d9b7e9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5ec79d91047e5354385932be62d9b7e9, type: 3}
 --- !u!4 &6739604590074095136 stripped
 Transform:
@@ -617,7 +554,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5390493467979672190, guid: 5e50da2aaaa1aeb499a73ee0afc3d5af, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5e50da2aaaa1aeb499a73ee0afc3d5af, type: 3}
 --- !u!4 &3215374342331330988 stripped
 Transform:
@@ -702,7 +640,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7779373779798476127, guid: 678375bc43e4e6244bc2709ae077e692, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 678375bc43e4e6244bc2709ae077e692, type: 3}
 --- !u!4 &8073071374180295523 stripped
 Transform:

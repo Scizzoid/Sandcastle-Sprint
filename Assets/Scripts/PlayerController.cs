@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -16,15 +17,17 @@ public class PlayerController : MonoBehaviour
     public GameObject startTextObj;
     public GameObject directionsTextObj;
     public GameObject unlockedTextObj;
-    public GameObject FinishedTextObj;
     public GameObject LoseTextObj;
     public GameObject WinTextObj;
+    public GameObject blackSquare;
+    public GameObject nextLevelButton;
+    public GameObject restartLevelButton;
     public AudioSource footsteps;
     public AudioSource kick;
+    public AudioSource oceanNoise;
 
     private bool started = false;
     private bool finished = false;
-    private bool won = false;
     private bool attacking = false;
     private bool shrinking = false;
     private bool grounded = true;
@@ -32,25 +35,26 @@ public class PlayerController : MonoBehaviour
     private bool growCR = false;
     private bool footstepsPlaying = false;
     private float fallTimer = 0.0f;
-    private float finishedTimer;
     private float loseRotation = -25.0f;
     private float defJumpHeight;
     private int defJumps;
     private Rigidbody rb;
-    private TextMeshProUGUI FinishedText;
     private Animator playerAnimator;
     private Coroutine shrink;
     private Coroutine grow;
 
     void Start()
     {
+        blackSquare.SetActive(true);
+        StartCoroutine(levelFadeIn());
+
         // Set UI object states
         WinTextObj.SetActive(false);
         LoseTextObj.SetActive(false);
-        FinishedTextObj.SetActive(false);
+        nextLevelButton.SetActive(false);
         directionsTextObj.SetActive(true);
         startTextObj.SetActive(true);
-        if (!(SceneManager.GetActiveScene().name == "Beta Level 1"))
+        if (!(SceneManager.GetActiveScene().name == "Final Level 1"))
         {
             unlockedTextObj.SetActive(true);
         }
@@ -62,8 +66,22 @@ public class PlayerController : MonoBehaviour
         // Accessed components
         rb = GetComponent<Rigidbody>();
         playerAnimator = playerModel.GetComponent<Animator>();
-        FinishedText = FinishedTextObj.GetComponent<TMPro.TextMeshProUGUI>();
+    }
 
+    private IEnumerator levelFadeIn()
+    {
+        Color fadeColor = blackSquare.GetComponent<Image>().color;
+        float fade;
+
+        // Fade in Scene & Audio
+        while (blackSquare.GetComponent<Image>().color.a > 0)
+        {
+            fade = fadeColor.a - Time.deltaTime * 0.5f;
+            fadeColor = new Color(fadeColor.r, fadeColor.g, fadeColor.b, fade);
+            blackSquare.GetComponent<Image>().color = fadeColor;
+            oceanNoise.volume = (1.0f - fade);
+            yield return null;
+        }
     }
 
     void FixedUpdate()
@@ -84,43 +102,6 @@ public class PlayerController : MonoBehaviour
             footsteps.Stop();
             footstepsPlaying = false;
         }
-
-        // Display finish text
-        if (finished)
-        {
-            FinishedTextObj.SetActive(true);
-            finishedTimer -= Time.deltaTime;
-
-            if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
-            {
-                FinishedText.text = "Next Level in " + Mathf.Round(finishedTimer).ToString();
-            }
-
-            else
-            {
-                FinishedText.text = "Restarting in " + Mathf.Round(finishedTimer).ToString();
-            }
-
-            if (finishedTimer <= 0.0f)
-            {
-                // Next level
-                if (won && !(SceneManager.GetActiveScene().name == "Beta Level 3"))
-                {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-                }
-
-                // Restart game
-                else if (won && SceneManager.GetActiveScene().name == "Beta Level 3")
-                {
-                    SceneManager.LoadScene(0);
-                }
-                // Restart scene
-                else
-                {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-                }
-            }
-        }
     }
 
 //----------------------------------JUMP----------------------------------
@@ -134,7 +115,7 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool("GameStarted", started);
             startTextObj.SetActive(false);
             directionsTextObj.SetActive(false);
-            if (!(SceneManager.GetActiveScene().name == "Beta Level 1"))
+            if (!(SceneManager.GetActiveScene().name == "Final Level 1"))
             {
                 unlockedTextObj.SetActive(false);
             }
@@ -267,37 +248,47 @@ public class PlayerController : MonoBehaviour
 
 //----------------------------LEVEL SHORTCUTS-----------------------------
 
-    void OnLevel1()
+    void OnMenu()
     {
         SceneManager.LoadScene(0);
     }
 
-    void OnLevel2()
+    void OnLevel1()
     {
         SceneManager.LoadScene(1);
     }
 
-    void OnLevel3()
+    void OnLevel2()
     {
         SceneManager.LoadScene(2);
     }
 
-//------------------------------------------------------------------------
+    void OnLevel3()
+    {
+        SceneManager.LoadScene(3);
+    }
 
-//------------------------COLLISIONS & TRIGGERS---------------------------
+    //------------------------------------------------------------------------
+
+    //------------------------COLLISIONS & TRIGGERS---------------------------
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.name == "Goal Trigger")
         {
             WinTextObj.SetActive(true);
+            nextLevelButton.SetActive(true);
 
             // Stop player
             speed = 0.0f;
             jumpHeight = 0.0f;
-            finishedTimer = 5.0f;
-            finished = won = true;
+            finished = true;
             playerAnimator.SetBool("GameWon", finished);
+        }
+
+        else if (other.gameObject.CompareTag("Collectible"))
+        {
+            other.gameObject.SetActive(false);
         }
     }
 
@@ -329,6 +320,7 @@ public class PlayerController : MonoBehaviour
             {
                 playerAnimator.SetBool("GameLost", true);
                 LoseTextObj.SetActive(true);
+                restartLevelButton.SetActive(true);
                 speed = 0.0f;
                 jumpHeight = 0.0f;
 
@@ -351,7 +343,6 @@ public class PlayerController : MonoBehaviour
                     // Player will be pushed forward and fall over
                     rb.velocity = new Vector3(-2, 0, 0);
                 }
-                finishedTimer = 3.0f;
                 finished = true;
             }
         }

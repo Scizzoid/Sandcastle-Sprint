@@ -51,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Level1",
+                    "name": "Menu",
                     "type": "Button",
                     "id": "e794585d-2142-4278-9ddb-b60af09bc164",
                     "expectedControlType": "Button",
@@ -60,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Level2",
+                    "name": "Level1",
                     "type": "Button",
                     "id": "eaf6dd8d-8832-4b98-b17d-7bb27bf8a0e8",
                     "expectedControlType": "Button",
@@ -69,9 +69,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Level3",
+                    "name": "Level2",
                     "type": "Button",
                     "id": "ebccc6a3-230d-4263-b2d0-eb064b4739b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Level3",
+                    "type": "Button",
+                    "id": "41d7fb2d-cd26-4d9f-84c1-be96305f9b8d",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -313,17 +322,28 @@
                 {
                     "name": "",
                     "id": "7f7f784b-f6a1-4351-b657-e0ce5f28f36c",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/0",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Level1",
+                    "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "d9c6d5b4-e106-4e09-8e6f-0faaa935d266",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Level1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92645710-17a1-4663-9d15-b3e178f4c087",
                     "path": "<Keyboard>/2",
                     "interactions": "",
                     "processors": "",
@@ -334,7 +354,7 @@
                 },
                 {
                     "name": "",
-                    "id": "92645710-17a1-4663-9d15-b3e178f4c087",
+                    "id": "e3e21c89-d15a-4f68-a0f3-96e32ca8806f",
                     "path": "<Keyboard>/3",
                     "interactions": "",
                     "processors": "",

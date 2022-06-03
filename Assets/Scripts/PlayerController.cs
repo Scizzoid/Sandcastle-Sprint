@@ -13,18 +13,23 @@ public class PlayerController : MonoBehaviour
     public float scaleSpeed = 0.03f;
     public float jumpHeight = 4.0f;
     public int curJumps = 1;
+    public int totalCoconuts;
     public GameObject playerModel;
     public GameObject startTextObj;
     public GameObject directionsTextObj;
     public GameObject unlockedTextObj;
     public GameObject LoseTextObj;
     public GameObject WinTextObj;
+    public GameObject CollectedTextObj;
     public GameObject blackSquare;
     public GameObject nextLevelButton;
     public GameObject restartLevelButton;
+    public GameObject loseParticles;
     public AudioSource footsteps;
     public AudioSource kick;
     public AudioSource oceanNoise;
+    public AudioSource electricity;
+    public AudioSource collect;
 
     private bool started = false;
     private bool finished = false;
@@ -38,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private float loseRotation = -25.0f;
     private float defJumpHeight;
     private int defJumps;
+    private int collected = 0;
     private Rigidbody rb;
     private Animator playerAnimator;
     private Coroutine shrink;
@@ -278,6 +284,8 @@ public class PlayerController : MonoBehaviour
         {
             WinTextObj.SetActive(true);
             nextLevelButton.SetActive(true);
+            CollectedTextObj.GetComponent<TMPro.TextMeshProUGUI>().text = collected.ToString() + " of " + totalCoconuts.ToString() + " Coconuts Collected!";
+            CollectedTextObj.SetActive(true);
 
             // Stop player
             speed = 0.0f;
@@ -286,9 +294,11 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool("GameWon", finished);
         }
 
-        else if (other.gameObject.CompareTag("Collectible"))
+        else if (other.gameObject.CompareTag("Collectible") && !finished)
         {
+            collect.Play();
             other.gameObject.SetActive(false);
+            collected += 1;
         }
     }
 
@@ -318,9 +328,11 @@ public class PlayerController : MonoBehaviour
 
             else
             {
+                loseParticles.SetActive(true);
                 playerAnimator.SetBool("GameLost", true);
                 LoseTextObj.SetActive(true);
                 restartLevelButton.SetActive(true);
+                electricity.Play();
                 speed = 0.0f;
                 jumpHeight = 0.0f;
 

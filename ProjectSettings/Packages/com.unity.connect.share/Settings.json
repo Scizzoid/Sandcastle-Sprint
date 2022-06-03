@@ -21,7 +21,7 @@
             {
                 "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "buildOutputDirList",
-                "value": "{\"m_Value\":\"E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds/Beta;E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds/Alpha;E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds;;;;;;;\"}"
+                "value": "{\"m_Value\":\"E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds/Final;E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds/Beta;E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds/Alpha;E:/Program Files/GitHub/Sandcastle-Sprint/WebGL Builds;;;;;;\"}"
             }
         ]
     }
